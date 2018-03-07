@@ -248,6 +248,5 @@ class Neural_Network(object):
         for i in range(self.theta.__len__()):
             for j in range(np.shape(self.theta[i])[0]):
                 for k in range(np.shape(self.theta[i])[1]):
-                    self.theta[i][j,
-                                  k] -= (self.learning_rate * derivatives[i][j, k])
+                    self.theta[i][j, k] -= (self.learning_rate * derivatives[i][j, k])
         return
