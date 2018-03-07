@@ -1,6 +1,8 @@
 import numpy as np
 
 # Default activation function
+
+
 def sigmoid(z, derivative=False):
     if derivative:
         return z * (1.0 - z)
@@ -8,6 +10,8 @@ def sigmoid(z, derivative=False):
         return 1.0 / (1.0 + np.exp(-z))
 
 # Alternative activation function
+
+
 def tanh(z, derivative=False):
     if derivative:
         return 1 - y * y
@@ -15,6 +19,8 @@ def tanh(z, derivative=False):
         return (2 * sigmoid(2 * z)) - 1
 
 # Returns list as a vector (n x 1 matrix)
+
+
 def vectorize(list):
     return np.matrix([list]).transpose()
 
@@ -74,7 +80,8 @@ class Neural_Network(object):
             try:
                 self.read_params()
             except IOError:
-                raise IOError('No params.npy found, run with preload_params=False to generate random parameters')
+                raise IOError(
+                    'No params.npy found, run with preload_params=False to generate random parameters')
         else:
             # Randomly generate parameters
             # Size of theta matrix for layer j = (Size of activation vector (j+1)) x (Size of activation vector j)
@@ -149,7 +156,8 @@ class Neural_Network(object):
         # Calculate deltas for hidden layers
         for i in range(self.activation.__len__() - 2, 0, -1):
             term1 = np.dot(self.theta[i].transpose(), self.delta[i + 1])
-            term2 = self.activation_function(self.activation[i], derivative=True)
+            term2 = self.activation_function(
+                self.activation[i], derivative=True)
             self.delta[i] = np.multiply(term1, term2)
 
         return self.delta
@@ -172,14 +180,15 @@ class Neural_Network(object):
                 self.forward_propagate(training[i])
                 self.back_propagate(labels[i])
                 for j in range(delta_sum.__len__()):
-                    delta_sum[j] += np.dot(self.delta[j + 1], self.activation[j].transpose())
-
+                    delta_sum[j] += np.dot(self.delta[j + 1],
+                                           self.activation[j].transpose())
 
             for i in range(delta_sum.__len__()):
                 delta_sum[i] *= (1.0 / m)
-                delta_sum[i] += (self.regularization_coefficient * self.theta[i])
+                delta_sum[i] += (self.regularization_coefficient *
+                                 self.theta[i])
             self.gradient_descent(delta_sum)
-            if self.debug and (iteration==iteration):
+            if self.debug and (iteration == iteration):
                 print '---Cost for iteration '+str(iteration)+'---'
                 print self.cost(self.batch_feed(training), labels)
 
@@ -191,7 +200,8 @@ class Neural_Network(object):
             sum2 = 0
             # For each possible classification, accumulate the sum of the differences between hypothesis and label
             for k in range(labels[0].__len__()):
-                sum2 += labels[i][k] * np.log(hypotheses[i][k]) + (1.0 - labels[i][k]) * np.log(1.0 - hypotheses[i][k])
+                sum2 += labels[i][k] * np.log(hypotheses[i][k]) + (
+                    1.0 - labels[i][k]) * np.log(1.0 - hypotheses[i][k])
             sum1 += sum2
         sum1 = sum1 * (-1 / hypotheses.__len__())
 
@@ -201,7 +211,8 @@ class Neural_Network(object):
             for j in range(np.shape(self.theta[i])[0]):
                 for k in range(np.shape(self.theta[i])[1]):
                     regularization += self.theta[i][j, k] ** 2
-        regularization = (regularization * self.regularization_coefficient) / (2 * hypotheses.__len__())
+        regularization = (
+            regularization * self.regularization_coefficient) / (2 * hypotheses.__len__())
         return sum1 + regularization
 
     # Estimates partial derivatives (VERY slow, do not use for training)
@@ -211,11 +222,11 @@ class Neural_Network(object):
         for i in range(self.theta.__len__()):
             for j in range(np.shape(self.theta[i])[0]):
                 for k in range(np.shape(self.theta[i])[1]):
-                    self.theta[i][j,k] += self.epsilon
+                    self.theta[i][j, k] += self.epsilon
                     term1 = self.cost(self.batch_feed(train), labels)
-                    self.theta[i][j,k] -= (2 * self.epsilon)
+                    self.theta[i][j, k] -= (2 * self.epsilon)
                     term2 = self.cost(self.batch_feed(train), labels)
-                    gradients[i][j,k] = (term1 - term2) / (2 * self.epsilon)
+                    gradients[i][j, k] = (term1 - term2) / (2 * self.epsilon)
                     self.theta = backup_theta[:]
         return gradients
 
@@ -237,5 +248,6 @@ class Neural_Network(object):
         for i in range(self.theta.__len__()):
             for j in range(np.shape(self.theta[i])[0]):
                 for k in range(np.shape(self.theta[i])[1]):
-                    self.theta[i][j,k] -= (self.learning_rate * derivatives[i][j,k])
+                    self.theta[i][j,
+                                  k] -= (self.learning_rate * derivatives[i][j, k])
         return
